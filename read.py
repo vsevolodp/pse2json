@@ -42,11 +42,7 @@ def find_table_boundary(blocks: Iterable[tuple]) -> tuple:
     return (min_x, max_x, min_y, max_y)
 
 def transform_block_text(text: str) -> list[str]:
-    # replaced = text.replace('Credit \n(', 'Credit (')
-    # replaced = replaced.replace(' kWh Used) \n(', ' kWh Used) (')
-    replaced = text
-    # parts = re.split(r'\n|[$]| kWh \n', replaced, flags=re.MULTILINE)
-    parts = re.split(r'\n|[$]|\(|\)', replaced, flags=re.MULTILINE)
+    parts = re.split(r'\n|[$]|\(|\)', text, flags=re.MULTILINE)
     stripped = list(map(str.strip, parts))
     filtered = list(filter(lambda x: x != '' and x != 'Electricity', stripped))
     return filtered
@@ -61,7 +57,6 @@ def read_pdf(file_name: str) -> Iterable[str]:
 
         new_block = True
         for block in page_blocks:
-            # print(block)
             upper_left = get_block_upper_left(block)
             bottom_right = get_block_lower_right(block)
             if (min_y < upper_left[1] and upper_left[1] <= max_y
@@ -73,13 +68,7 @@ def read_pdf(file_name: str) -> Iterable[str]:
                 else:
                     blocks[-1].extend(text)
 
-                # print(f'{(bottom_right[0])}, {(max_x)}, {text}')
                 new_block = math.isclose(bottom_right[0], max_x, rel_tol=0.01)
-                # if math.isclose(upper_left[0], min_x):
-                #     blocks.append(transform_block_text(get_block_text(block)))
-                # elif (not math.isclose(upper_left[0], min_x)
-                #     and math.isclose(get_block_lower_right(block)[0], max_x)):
-                #     blocks[-1].extend(transform_block_text(get_block_text(block)))
 
     return blocks
 
