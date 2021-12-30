@@ -68,7 +68,8 @@ def read_pdf(file_name: str) -> Iterable[str]:
                 else:
                     blocks[-1].extend(text)
 
-                new_block = math.isclose(bottom_right[0], max_x, rel_tol=0.01)
+                new_block = (math.isclose(bottom_right[0], max_x, rel_tol=0.01)
+                    or 'Taxes' in text)
 
     return blocks
 
