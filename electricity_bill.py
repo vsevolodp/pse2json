@@ -1,39 +1,44 @@
-from typing import NamedTuple
+from dataclasses import dataclass
 from datetime import date
 
-# datetime.strptime('11/7/2019', '%m/%d/%Y').date()
 
-class DateRange(NamedTuple):
+@dataclass(frozen=True)
+class DateRange:
     from_date: date
     to_date: date
 
 
-class Charge(NamedTuple):
+@dataclass(frozen=True)
+class Charge:
     rate_usd_per_kwh: float
     consumed_kwh: int
     charge_cents: int
 
 
-class TierPrice(NamedTuple):
+@dataclass(frozen=True)
+class TierCharge:
     dates: DateRange
     up_to_kwh: int
     charge: Charge
 
 
-class DatedCredit(NamedTuple):
+@dataclass(frozen=True)
+class DatedCharge:
     dates: DateRange
     charge: Charge    
 
 
-class ElectricityBill(NamedTuple):
+@dataclass(frozen=True)
+class ElectricityBill:
     dates: DateRange
     used_kwh: int
     basic_charge_cents: int
-    tier_1: list[TierPrice]
-    tier_2: list[TierPrice]
-    credit: Charge
-    federal_wind_power_credit: list[DatedCredit]
-    renewable_energycredit: list[DatedCredit]
+    tier_1: list[TierCharge]
+    tier_2: list[TierCharge]
+    energy_exchange_credit: Charge
+    federal_wind_power_credit: list[DatedCharge]
+    renewable_energy_credit: list[DatedCharge]
     other: Charge
     subtotal_cents: int
+    state_utility_tax: float
     total_cents: int
