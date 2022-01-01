@@ -39,7 +39,7 @@ def main() -> int:
         bill_json = json.dumps(bills[0], indent=2, cls=json_util.JSONEncoder)
         print(bill_json)
     else:
-        bills_json = json.dumps({ "bills": bills }, indent=2, cls=json_util.JSONEncoder)
+        bills_json = json.dumps({ 'bills': bills }, indent=2, cls=json_util.JSONEncoder)
         print(bills_json)
 
 

@@ -23,14 +23,14 @@ def _float_from_match(m: re.Match) -> float:
 
 def _parse_charge(text: str) -> electricity_bill.Charge:
     items = text.split(' ')
-    assert len(items) > 4, "More than 4 tokens expected"
-    assert items[-2] == 'kWh', "Second from last token should be 'kWh'"
+    assert len(items) > 4, 'More than 4 tokens expected'
+    assert items[-2] == 'kWh', 'Second from last token should be ''kWh'''
 
     rate_usd_per_kwh = float(items[-4].replace(',', ''))
     consumed_kwh = float(items[-3].replace(',', ''))
     charge_cents = int(round(float(items[-1].replace(',', '')) * 100))
 
-    assert int(round(rate_usd_per_kwh * consumed_kwh * 100)) == charge_cents, "rate x consumed != charge"
+    assert int(round(rate_usd_per_kwh * consumed_kwh * 100)) == charge_cents, 'rate x consumed != charge'
 
     return electricity_bill.Charge(rate_usd_per_kwh, consumed_kwh, charge_cents)
 
@@ -84,7 +84,6 @@ def read_electricity_bill(rows: Iterable[str]) -> electricity_bill.ElectricityBi
                 tier_1.append(tier)
             else:
                 tier_2.append(tier)
-
         elif row.startswith('Energy Exchange Credit'):
             energy_exchange_credit = _parse_charge(row)
         elif row.startswith('Federal Wind Power Credit'):
