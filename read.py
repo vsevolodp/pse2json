@@ -3,9 +3,10 @@
 # Install PyMuPDF
 # > pip3 install PyMuPDF
 
-import sys
+import json, sys
 
 import electricity_bill as eb
+import json_util
 import pdf_text_block_reader as ptbr
 import rows_reader
 import table_reader
@@ -30,9 +31,16 @@ def read_table(file_name: str) -> eb.ElectricityBill:
 
 
 def main() -> int:
+    bills: list[eb.ElectricityBill] = []
     for file_name in sys.argv[1:]:
-        bill = read_table(file_name)
-        print(bill)
+        bills.append(read_table(file_name))
+
+    if len(bills) == 1:
+        bill_json = json.dumps(bills[0], indent=2, cls=json_util.JSONEncoder)
+        print(bill_json)
+    else:
+        bills_json = json.dumps({ "bills": bills }, indent=2, cls=json_util.JSONEncoder)
+        print(bills_json)
 
 
 if __name__ == '__main__':
