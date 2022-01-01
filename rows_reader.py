@@ -99,6 +99,18 @@ def read_electricity_bill(rows: Iterable[str]) -> electricity_bill.ElectricityBi
         elif row.startswith('Current Electric Charges'):
             total_cents = int(round(float(row.split(' ')[-1]) * 100))
 
+    total_sum = (basic_charge_cents +
+        sum(x.charge.charge_cents for x in tier_1) +
+        sum(x.charge.charge_cents for x in tier_2) +
+        energy_exchange_credit.charge_cents +
+        sum(x.charge.charge_cents for x in federal_wind_power_credit) +
+        sum(x.charge.charge_cents for x in renewable_energy_credit) +
+        other.charge_cents)
+
+    assert total_sum == subtotal_cents, 'Subtotal doesn''t match with calculated sum'
+    assert total_sum == total_cents, 'Total doesn''t match with calculated sum'
+
+
     return electricity_bill.ElectricityBill(
         dates,
         used_kwh,
