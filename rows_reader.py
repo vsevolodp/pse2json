@@ -57,18 +57,18 @@ def _parse_tier(text: str) -> electricity_bill.TierCharge:
         tier_index)
 
 def read_electricity_bill(rows: Iterable[str]) -> electricity_bill.ElectricityBill:
-    dates: electricity_bill.DateRange
-    used_kwh: int
-    basic_charge_cents: int
+    dates: electricity_bill.DateRange = None
+    used_kwh: int = None
+    basic_charge_cents: int = None
     tier_1: list[electricity_bill.TierCharge] = []
     tier_2: list[electricity_bill.TierCharge] = []
-    energy_exchange_credit: electricity_bill.Charge
+    energy_exchange_credit: electricity_bill.Charge = None
     federal_wind_power_credit: list[electricity_bill.DatedCharge] = []
     renewable_energy_credit: list[electricity_bill.DatedCharge] = []
-    other: electricity_bill.Charge
-    subtotal_cents: int
-    state_utility_tax: float
-    total_cents: int
+    other: electricity_bill.Charge = None
+    subtotal_cents: int = None
+    state_utility_tax: float = None
+    total_cents: int = None
 
     for row in rows:
         if row.startswith('Your Electric Charge Details'):
@@ -98,16 +98,25 @@ def read_electricity_bill(rows: Iterable[str]) -> electricity_bill.ElectricityBi
             state_utility_tax = _float_from_match(_RE_FLOAT.search(row)) / 100
         elif row.startswith('Current Electric Charges'):
             total_cents = int(round(float(row.split(' ')[-1]) * 100))
+    
+    energy_exchange_credit_charge_cents = None
+    if energy_exchange_credit:
+        energy_exchange_credit_charge_cents = energy_exchange_credit.charge_cents
 
-    total_sum = (basic_charge_cents +
-        sum(x.charge.charge_cents for x in tier_1) +
-        sum(x.charge.charge_cents for x in tier_2) +
-        energy_exchange_credit.charge_cents +
-        sum(x.charge.charge_cents for x in federal_wind_power_credit) +
-        sum(x.charge.charge_cents for x in renewable_energy_credit) +
-        other.charge_cents)
+    other_charge_cents = None
+    if other:
+        other_charge_cents = other.charge_cents
 
-    assert total_sum == subtotal_cents, 'Subtotal doesn''t match with calculated sum'
+    values = [basic_charge_cents,
+        sum(x.charge.charge_cents for x in tier_1),
+        sum(x.charge.charge_cents for x in tier_2),
+        energy_exchange_credit_charge_cents,
+        sum(x.charge.charge_cents for x in federal_wind_power_credit),
+        sum(x.charge.charge_cents for x in renewable_energy_credit),
+        other_charge_cents]
+    total_sum = sum(v for v in values if v)
+
+    assert total_sum == subtotal_cents, 'Subtotal doesn''t match with calculated sum: expected %d, actual %d' % (total_sum, subtotal_cents)
     assert total_sum == total_cents, 'Total doesn''t match with calculated sum'
 
 
