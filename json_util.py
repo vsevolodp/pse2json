@@ -11,7 +11,7 @@ class JSONEncoder(json.JSONEncoder):
         elif isinstance(obj, (datetime.datetime, datetime.date)):
             return obj.isoformat()
         else:
-            return super().default(o)
+            return super().default(obj)
 
 def dataclass_from_dict(class_type, d):
     try:
