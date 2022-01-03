@@ -10,7 +10,7 @@ class RowReaderTests(unittest.TestCase):
             "Subtotal 10.01",
             "Current Electric Charges $ 10.01"]
         result = rr.read_electricity_bill(rows)
-        self.assertEqual(1001, result.basic_charge_cents)
+        self.assertEqual(1000, result.basic_charge_cents)
 
 
 if __name__ == '__main__':
