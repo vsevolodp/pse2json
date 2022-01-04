@@ -1,1 +1,5 @@
 PyMuPDF==1.19.4
+
+# Testing
+pytest==6.2.5
+pytest-cov==3.0.0
