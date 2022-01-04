@@ -4,7 +4,6 @@ __pycache__/
 
 # coverage files
 .coverage
-.coveragerc
 
 .vscode/
 

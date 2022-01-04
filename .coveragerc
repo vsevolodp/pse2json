@@ -1,0 +1,8 @@
+[run]
+    source=pse2json
+
+[report]
+exclude_lines =
+    pragma: no cover
+    @abstract
+    if __name__ == .__main__.:
