@@ -35,12 +35,15 @@ def main() -> int:
     for file_name in sys.argv[1:]:
         bills.append(read_table(file_name))
 
-    if len(bills) == 1:
-        bill_json = json.dumps(bills[0], indent=2, cls=json_util.JSONEncoder)
-        print(bill_json)
-    else:
-        bills_json = json.dumps({ 'bills': bills }, indent=2, cls=json_util.JSONEncoder)
-        print(bills_json)
+    match len(bills):
+        case 0:
+            pass
+        case 1:
+            bill_json = json.dumps(bills[0], indent=2, cls=json_util.JSONEncoder)
+            print(bill_json)
+        case _:
+            bills_json = json.dumps({ 'bills': bills }, indent=2, cls=json_util.JSONEncoder)
+            print(bills_json)
 
 
 if __name__ == '__main__':
