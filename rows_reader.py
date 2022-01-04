@@ -122,8 +122,9 @@ def read_electricity_bill(rows: Iterable[str]) -> electricity_bill.ElectricityBi
         other_charge_cents]
     total_sum = sum(v for v in values if v)
 
-    assert total_sum == subtotal_cents, 'Subtotal doesn''t match with calculated sum: expected %.2f, actual %.2f' % (total_sum / 100, subtotal_cents / 100)
-    assert total_sum == total_cents, 'Total doesn''t match with calculated sum'
+    if total_sum:
+        assert total_sum == subtotal_cents, f'Subtotal doesn\'t match with calculated sum: expected {total_sum}, actual {subtotal_cents}'
+        assert total_sum == total_cents, 'Total doesn\'t match with calculated sum'
 
 
     return electricity_bill.ElectricityBill(

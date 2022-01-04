@@ -103,12 +103,7 @@ class RowReaderTests(unittest.TestCase):
         self.assertEqual(797, result.total_cents)
 
     def test_state_utility_tax(self):
-        rows = [
-            'Basic Charge $7.49 per month 7.49',
-            'Taxes State Utility Tax ($6.89 included in above charges) 3.873%',
-            'Subtotal 7.49',
-            'Current Electric Charges $ 7.49'
-        ]
+        rows = ['Taxes State Utility Tax ($6.89 included in above charges) 3.873%']
         result = rr.read_electricity_bill(rows)
         self.assertEqual(0.03873, result.state_utility_tax)
 
