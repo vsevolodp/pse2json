@@ -2,5 +2,11 @@
 __pycache__/
 *.py[cod]
 
+# coverage files
+.coverage
+.coveragerc
+
+.vscode/
+
 # Data files
 data/
