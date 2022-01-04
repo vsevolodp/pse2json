@@ -2,9 +2,14 @@
 __pycache__/
 *.py[cod]
 
+# pytest cache
+.pytest_cache
+
 # coverage files
 .coverage
+coverage.xml
 
+# Visual Studio Code files
 .vscode/
 
 # Data files
