@@ -41,8 +41,9 @@ jobs:
     - name: Test with coverage
       run: |
         pip install pytest
-        pip install pytest-cov
-        pytest tests/ --cov=./ --cov-report=xml
+        pip install coverage
+        coverage run -m pytest tests/
+        coverage xml
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
@@ -50,4 +51,5 @@ jobs:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
         ignore:
-          "tests/"
+          - "tests/"
+          - "read.py"
