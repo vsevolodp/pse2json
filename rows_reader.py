@@ -95,9 +95,11 @@ def read_electricity_bill(rows: Iterable[str]) -> electricity_bill.ElectricityBi
         elif row.startswith('Subtotal'):
             subtotal_cents = int(round(float(row.split(' ')[-1]) * 100))
         elif row.startswith('Taxes State Utility Tax'):    
-            state_utility_tax = _float_from_match(_RE_FLOAT.search(row)) / 100
+            state_utility_tax = _float_from_match(_RE_FLOAT.search(row.split(") ")[-1])) / 100
         elif row.startswith('Current Electric Charges'):
             total_cents = int(round(float(row.split(' ')[-1]) * 100))
+        else:
+            raise ValueError(f'Unknown value found: {row}')
     
     energy_exchange_credit_charge_cents = None
     if energy_exchange_credit:
@@ -116,7 +118,7 @@ def read_electricity_bill(rows: Iterable[str]) -> electricity_bill.ElectricityBi
         other_charge_cents]
     total_sum = sum(v for v in values if v)
 
-    assert total_sum == subtotal_cents, 'Subtotal doesn''t match with calculated sum: expected %d, actual %d' % (total_sum, subtotal_cents)
+    assert total_sum == subtotal_cents, 'Subtotal doesn''t match with calculated sum: expected %.2f, actual %.2f' % (total_sum / 100, subtotal_cents / 100)
     assert total_sum == total_cents, 'Total doesn''t match with calculated sum'
 
 
