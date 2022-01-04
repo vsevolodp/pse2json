@@ -2,7 +2,7 @@ import datetime, re
 
 from collections.abc import Iterable
 
-import electricity_bill
+from pse2json import electricity_bill
 
 _FIRST = '(First '
 _FIRST_LEN = len(_FIRST)

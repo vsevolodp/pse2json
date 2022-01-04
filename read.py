@@ -5,11 +5,11 @@
 
 import json, sys
 
-import electricity_bill as eb
-import json_util
-import pdf_text_block_reader as ptbr
-import rows_reader
-import table_reader
+from pse2json import electricity_bill as eb
+from pse2json import json_util
+from pse2json import pdf_text_block_reader as ptbr
+from pse2json import rows_reader
+from pse2json import table_reader
 
 
 PAGE_INDEX = 1

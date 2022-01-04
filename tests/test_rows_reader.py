@@ -1,8 +1,8 @@
 import datetime
 import unittest
 
-import electricity_bill as eb
-import rows_reader as rr
+from pse2json import electricity_bill as eb
+from pse2json import rows_reader as rr
 
 
 class RowReaderTests(unittest.TestCase):

@@ -1,4 +1,4 @@
-from text_block import Rectangle, TextBlock
+from pse2json.text_block import Rectangle, TextBlock
 
 # import PyMuPDF - python binding for MyPDF
 import fitz

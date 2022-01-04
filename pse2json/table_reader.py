@@ -2,7 +2,7 @@ import math, re
 
 from collections.abc import Iterable
 
-from text_block import Rectangle, TextBlock
+from pse2json.text_block import Rectangle, TextBlock
 
 _BASIC_CHARGE = ' Basic Charge '
 _BASIC_CHARGE_OFFSET = 1
