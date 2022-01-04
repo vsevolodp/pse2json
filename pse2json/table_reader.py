@@ -25,17 +25,17 @@ def _find_table_rect(blocks: Iterable[TextBlock], from_text: str, to_text: str) 
             bottom = block.rect.bottom
 
     if top == 0.0:
-        raise ValueError('Can''t find upper boundary of the table')
+        raise ValueError('Can\'t find upper boundary of the table')
     if bottom == 0.0:
-        raise ValueError('Can''t find lower boundary of the table')
+        raise ValueError('Can\'t find lower boundary of the table')
 
     return Rectangle(left, top, right, bottom)
 
 def _transform_row(text: str) -> str:
     new_text = _RE_SPACES.sub(' ', text)
 
-    # replace UNICODE MINUS with ASCII minus
-    new_text = new_text.replace('−', '-')
+    # replace Unicode MINUS SIGN with ASCII minus
+    new_text = new_text.replace('\N{MINUS SIGN}', '-')
 
     # First 'Tier 1' row contains 'Electricity' in the beginning of the row
     new_text = _RE_ELECTRICITY.sub('', new_text)
@@ -49,29 +49,29 @@ def read_table_rows(blocks: Iterable[TextBlock], from_text: str, to_text: str) -
 
     table_rect = _find_table_rect(blocks, from_text, to_text)
 
-    new_block = True
+    last_block_right = 1e9
     text = ''
     for block in blocks:
         if block.in_rectangle(table_rect):
             block_text = block.text.replace('\n', ' ').strip()
 
-            # split 'Basic charge' into it's own row
-            basic_charge_index = block_text.find(_BASIC_CHARGE)
-            if basic_charge_index >= 0:
-                rows.append(_transform_row(block_text[:basic_charge_index]))
-                block_text = block_text[basic_charge_index + _BASIC_CHARGE_OFFSET:].replace(' $ ', ' ')
-
+            new_block = block.rect.left < last_block_right
             if new_block:
+                if text:
+                    rows.append(_transform_row(text))
+
+                # split 'Basic charge' into its own row
+                basic_charge_index = block_text.find(_BASIC_CHARGE)
+                if basic_charge_index >= 0:
+                    rows.append(_transform_row(block_text[:basic_charge_index]))
+                    block_text = block_text[basic_charge_index + _BASIC_CHARGE_OFFSET:].replace(' $ ', ' ')
+
                 text = block_text
             else:
                 text += ' '
                 text += block_text
 
-            new_block = (math.isclose(block.rect.right, table_rect.right, rel_tol=0.01)
-                or 'Taxes' in text)
-            if new_block:
-                rows.append(_transform_row(text))
-                text = ''
+            last_block_right = block.rect.right
 
     if text:
         rows.append(_transform_row(text))
