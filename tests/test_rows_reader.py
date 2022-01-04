@@ -156,5 +156,6 @@ class RowReaderTests(unittest.TestCase):
         exception = context.exception
         self.assertTrue(str(exception).startswith('rate '))
 
+
 if __name__ == '__main__':
     unittest.main()
