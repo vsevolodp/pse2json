@@ -27,6 +27,19 @@ class RowReaderTests(unittest.TestCase):
         rows_with_total.append(f'Current Electric Charges $ {total:.2f}')
         return rows_with_total
 
+    def test_your_electric_charge_ignored(self):
+        rows = ['Your Electric Charge Details (32 days) Rate x Unit = Charge']
+        result = rr.read_electricity_bill(rows)
+        self.assertEqual(None, result.subtotal_cents)
+
+
+    def test_used_info(self):
+        rows = ['1,459 kWh used for service 12/8/2019 - 1/8/2020']
+
+        result = rr.read_electricity_bill(rows)
+        self.assertEqual(1459, result.used_kwh)
+        self._assertDates(2019, 12, 8, 2020, 1, 8, result.dates)
+
     def test_basic_charge(self):
         rows = self._add_total([
             'Basic Charge $10.01 per month 10.01',
@@ -75,6 +88,16 @@ class RowReaderTests(unittest.TestCase):
         result = rr.read_electricity_bill(rows)
         self.assertEqual(1, len(result.federal_wind_power_credit))
         self._assertDates(2020, 12, 9, 2020, 12, 31, result.federal_wind_power_credit[0].dates)
+        self._assertCharge(-0.001893, 1248.9, -2.36, result.federal_wind_power_credit[0].charge)
+
+    def test_dated_charge_no_dates(self):
+        rows = self._add_total([
+            'Federal Wind Power Credit -0.001893 1,248.9 kWh -2.36',
+        ])
+        
+        result = rr.read_electricity_bill(rows)
+        self.assertEqual(1, len(result.federal_wind_power_credit))
+        self.assertIsNone(result.federal_wind_power_credit[0].dates)
         self._assertCharge(-0.001893, 1248.9, -2.36, result.federal_wind_power_credit[0].charge)
     
     def test_renewable_energy_credit(self):
