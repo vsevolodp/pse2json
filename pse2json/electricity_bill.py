@@ -11,7 +11,7 @@ class DateRange:
 @dataclass(frozen=True)
 class Charge:
     rate_usd_per_kwh: float
-    consumed_kwh: int
+    consumed_kwh: float
     charge_cents: int
 
 
