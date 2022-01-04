@@ -28,9 +28,13 @@ def _parse_charge(text: str) -> electricity_bill.Charge:
 
     rate_usd_per_kwh = float(items[-4].replace(',', ''))
     consumed_kwh = float(items[-3].replace(',', ''))
-    charge_cents = int(round(float(items[-1].replace(',', '')) * 100))
+    charge_cents = int(items[-1].replace(',', '').replace('.', ''))
 
-    assert int(round(rate_usd_per_kwh * consumed_kwh * 100)) == charge_cents, 'rate x consumed != charge'
+    calculated_charge_cents = int(round(rate_usd_per_kwh * consumed_kwh * 100))
+    if abs(calculated_charge_cents - charge_cents) > 1:
+        raise ValueError(
+            f'rate {rate_usd_per_kwh} x consumed {consumed_kwh} ({calculated_charge_cents / 100}) != ' +
+            f'charge {charge_cents / 100} in \'{text}\'')
 
     return electricity_bill.Charge(rate_usd_per_kwh, consumed_kwh, charge_cents)
 

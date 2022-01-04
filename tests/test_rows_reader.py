@@ -61,11 +61,11 @@ class RowReaderTests(unittest.TestCase):
 
     def test_energy_exchange_credit(self):
         rows = self._add_total([
-            'Energy Exchange Credit -0.12345 1,234 kWh -152.3373',
+            'Energy Exchange Credit -0.007386 1,629 kWh -12.03',
         ])
         
         result = rr.read_electricity_bill(rows)
-        self._assertCharge(-0.12345, 1234, -152.34, result.energy_exchange_credit)
+        self._assertCharge(-0.007386, 1629, -12.03, result.energy_exchange_credit)
 
     def test_federal_wind_power_credit(self):
         rows = self._add_total([
@@ -120,6 +120,23 @@ class RowReaderTests(unittest.TestCase):
         exception = context.exception
         self.assertEqual(str(exception), 'Unknown value found: ' + unknown_charge)
 
+    def test_charge_too_big(self):
+        charge = 'Energy Exchange Credit -0.007386 1,629 kWh -12.05'
+
+        rows = self._add_total([charge])
+        with self.assertRaises(ValueError) as context:
+            rr.read_electricity_bill(rows)
+        exception = context.exception
+        self.assertTrue(str(exception).startswith('rate '))
+
+    def test_charge_too_small(self):
+        charge = 'Energy Exchange Credit -0.007386 1,629 kWh -12.01'
+
+        rows = self._add_total([charge])
+        with self.assertRaises(ValueError) as context:
+            rr.read_electricity_bill(rows)
+        exception = context.exception
+        self.assertTrue(str(exception).startswith('rate '))
 
 if __name__ == '__main__':
     unittest.main()
