@@ -49,29 +49,29 @@ def read_table_rows(blocks: Iterable[TextBlock], from_text: str, to_text: str) -
 
     table_rect = _find_table_rect(blocks, from_text, to_text)
 
-    last_block_right = 1e9
+    new_block = True
     text = ''
     for block in blocks:
         if block.in_rectangle(table_rect):
             block_text = block.text.replace('\n', ' ').strip()
 
-            new_block = block.rect.left < last_block_right
+            # split 'Basic charge' into it's own row
+            basic_charge_index = block_text.find(_BASIC_CHARGE)
+            if basic_charge_index >= 0:
+                rows.append(_transform_row(block_text[:basic_charge_index]))
+                block_text = block_text[basic_charge_index + _BASIC_CHARGE_OFFSET:].replace(' $ ', ' ')
+
             if new_block:
-                if text:
-                    rows.append(_transform_row(text))
-
-                # split 'Basic charge' into its own row
-                basic_charge_index = block_text.find(_BASIC_CHARGE)
-                if basic_charge_index >= 0:
-                    rows.append(_transform_row(block_text[:basic_charge_index]))
-                    block_text = block_text[basic_charge_index + _BASIC_CHARGE_OFFSET:].replace(' $ ', ' ')
-
                 text = block_text
             else:
                 text += ' '
                 text += block_text
 
-            last_block_right = block.rect.right
+            new_block = (math.isclose(block.rect.right, table_rect.right, rel_tol=0.01)
+                or 'Taxes' in text)
+            if new_block:
+                rows.append(_transform_row(text))
+                text = ''
 
     if text:
         rows.append(_transform_row(text))
