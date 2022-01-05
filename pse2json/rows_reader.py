@@ -67,8 +67,10 @@ def read_electricity_bill(rows: Iterable[str]) -> electricity_bill.ElectricityBi
     tier_1: list[electricity_bill.TierCharge] = []
     tier_2: list[electricity_bill.TierCharge] = []
     energy_exchange_credit: electricity_bill.Charge = None
+    electric_cons_program_charge: list[electricity_bill.DatedCharge] = []
     federal_wind_power_credit: list[electricity_bill.DatedCharge] = []
     renewable_energy_credit: list[electricity_bill.DatedCharge] = []
+    power_cost_adjustment: list[electricity_bill.DatedCharge] = []
     other: electricity_bill.Charge = None
     subtotal_cents: int = None
     state_utility_tax: float = None
@@ -90,10 +92,14 @@ def read_electricity_bill(rows: Iterable[str]) -> electricity_bill.ElectricityBi
                 tier_2.append(tier)
         elif row.startswith('Energy Exchange Credit'):
             energy_exchange_credit = _parse_charge(row)
+        elif row.startswith('Electric Cons. Program Charge'):
+            electric_cons_program_charge.append(_parse_dated_charge(row))
         elif row.startswith('Federal Wind Power Credit'):
             federal_wind_power_credit.append(_parse_dated_charge(row))
         elif row.startswith('Renewable Energy Credit'):
             renewable_energy_credit.append(_parse_dated_charge(row))
+        elif row.startswith('Power Cost Adjustment'):
+            power_cost_adjustment.append(_parse_dated_charge(row))
         elif row.startswith('Other Electric Charges & Credits'):
             other = _parse_charge(row)
         elif row.startswith('Subtotal'):
@@ -104,21 +110,19 @@ def read_electricity_bill(rows: Iterable[str]) -> electricity_bill.ElectricityBi
             total_cents = int(round(float(row.split(' ')[-1]) * 100))
         else:
             raise ValueError(f'Unknown value found: {row}')
-    
-    energy_exchange_credit_charge_cents = None
-    if energy_exchange_credit:
-        energy_exchange_credit_charge_cents = energy_exchange_credit.charge_cents
 
-    other_charge_cents = None
-    if other:
-        other_charge_cents = other.charge_cents
+    energy_exchange_credit_charge_cents = (
+        energy_exchange_credit.charge_cents if energy_exchange_credit else None)
 
+    other_charge_cents = other.charge_cents if other else None
     values = [basic_charge_cents,
         sum(x.charge.charge_cents for x in tier_1),
         sum(x.charge.charge_cents for x in tier_2),
         energy_exchange_credit_charge_cents,
+        sum(x.charge.charge_cents for x in electric_cons_program_charge),
         sum(x.charge.charge_cents for x in federal_wind_power_credit),
         sum(x.charge.charge_cents for x in renewable_energy_credit),
+        sum(x.charge.charge_cents for x in power_cost_adjustment),
         other_charge_cents]
     total_sum = sum(v for v in values if v)
 
@@ -134,8 +138,10 @@ def read_electricity_bill(rows: Iterable[str]) -> electricity_bill.ElectricityBi
         tier_1,
         tier_2,
         energy_exchange_credit,
+        electric_cons_program_charge,
         federal_wind_power_credit,
         renewable_energy_credit,
+        power_cost_adjustment,
         other,
         subtotal_cents,
         state_utility_tax,

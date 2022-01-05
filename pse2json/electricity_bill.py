@@ -36,8 +36,10 @@ class ElectricityBill:
     tier_1: list[TierCharge]
     tier_2: list[TierCharge]
     energy_exchange_credit: Charge
+    electric_cons_program_charge: list[DatedCharge]
     federal_wind_power_credit: list[DatedCharge]
     renewable_energy_credit: list[DatedCharge]
+    power_cost_adjustment: list[DatedCharge]
     other: Charge
     subtotal_cents: int
     state_utility_tax: float

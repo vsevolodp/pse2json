@@ -62,7 +62,7 @@ class RowReaderTests(unittest.TestCase):
 
     def test_tier2(self):
         rows = self._add_total([
-            'Tier 2 (Above 460 kWh Used) (12/9/2020 - 12/31/2020) 0.114643 788.9 kWh 90.44',
+            'Tier 2 (Above 460 kWh Used) (12/9/2020 - 12/31/2020) 0.114643 788.9 kWh 90.44'
         ])
 
         result = rr.read_electricity_bill(rows)
@@ -74,7 +74,7 @@ class RowReaderTests(unittest.TestCase):
 
     def test_energy_exchange_credit(self):
         rows = self._add_total([
-            'Energy Exchange Credit -0.007386 1,629 kWh -12.03',
+            'Energy Exchange Credit -0.007386 1,629 kWh -12.03'
         ])
         
         result = rr.read_electricity_bill(rows)
@@ -82,7 +82,7 @@ class RowReaderTests(unittest.TestCase):
 
     def test_federal_wind_power_credit(self):
         rows = self._add_total([
-            'Federal Wind Power Credit (12/9/2020 - 12/31/2020) -0.001893 1,248.9 kWh -2.36',
+            'Federal Wind Power Credit (12/9/2020 - 12/31/2020) -0.001893 1,248.9 kWh -2.36'
         ])
         
         result = rr.read_electricity_bill(rows)
@@ -92,7 +92,7 @@ class RowReaderTests(unittest.TestCase):
 
     def test_dated_charge_no_dates(self):
         rows = self._add_total([
-            'Federal Wind Power Credit -0.001893 1,248.9 kWh -2.36',
+            'Federal Wind Power Credit -0.001893 1,248.9 kWh -2.36'
         ])
         
         result = rr.read_electricity_bill(rows)
@@ -102,7 +102,7 @@ class RowReaderTests(unittest.TestCase):
     
     def test_renewable_energy_credit(self):
         rows = self._add_total([
-            'Renewable Energy Credit (12/9/2020 - 12/31/2020) -0.000082 1,248.9 kWh -0.10',
+            'Renewable Energy Credit (12/9/2020 - 12/31/2020) -0.000082 1,248.9 kWh -0.10'
         ])
         result = rr.read_electricity_bill(rows)
         self.assertEqual(1, len(result.renewable_energy_credit))
@@ -111,10 +111,28 @@ class RowReaderTests(unittest.TestCase):
     
     def test_other_electric_charges_and_credits(self):
         rows = self._add_total([
-            'Other Electric Charges & Credits 0.006794 1,629 kWh 11.07',
+            'Other Electric Charges & Credits 0.006794 1,629 kWh 11.07'
         ])
         result = rr.read_electricity_bill(rows)
         self._assertCharge(0.006794, 1629, 11.07, result.other)
+
+    def test_electric_cons_program_charge(self):
+        rows = self._add_total([
+            'Electric Cons. Program Charge (4/7/2021 - 4/30/2021) 0.004659 1,024.8 kWh 4.77'
+        ])
+        result = rr.read_electricity_bill(rows)
+        self.assertEqual(1, len(result.electric_cons_program_charge))
+        self._assertDates(2021, 4, 7, 2021, 4, 30, result.electric_cons_program_charge[0].dates)
+        self._assertCharge(0.004659, 1024.8, 4.77, result.electric_cons_program_charge[0].charge)
+
+    def test_power_cost_adjustment(self):
+        rows = self._add_total([
+            'Power Cost Adjustment (6/8/2021 - 6/30/2021) 0.002135 887.8 kWh 1.90'
+        ])
+        result = rr.read_electricity_bill(rows)
+        self.assertEqual(1, len(result.power_cost_adjustment))
+        self._assertDates(2021, 6, 8, 2021, 6, 30, result.power_cost_adjustment[0].dates)
+        self._assertCharge(0.002135, 887.8, 1.90, result.power_cost_adjustment[0].charge)
 
     def test_subtotal_total(self):
         rows = self._add_total([
