@@ -40,10 +40,8 @@ jobs:
 
     - name: Test with coverage
       run: |
-        pip install pytest
-        pip install coverage
-        coverage run -m pytest tests/
-        coverage xml
+        # pytest and pytest-cov are installed via requirements.txt
+        pytest --cov=pse2json --cov-report=xml tests
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
