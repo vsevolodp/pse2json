@@ -35,7 +35,7 @@ class ElectricityBill:
     basic_charge_cents: int
     tier_1: list[TierCharge]
     tier_2: list[TierCharge]
-    energy_exchange_credit: Charge
+    energy_exchange_credit: list[DatedCharge]
     electric_cons_program_charge: list[DatedCharge]
     federal_wind_power_credit: list[DatedCharge]
     renewable_energy_credit: list[DatedCharge]

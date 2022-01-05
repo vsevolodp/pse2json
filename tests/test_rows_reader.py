@@ -48,6 +48,15 @@ class RowReaderTests(unittest.TestCase):
         result = rr.read_electricity_bill(rows)
         self.assertEqual(1001, result.basic_charge_cents)
 
+    def test_basic_charge_as_two_rows(self):
+        rows = self._add_total([
+            'Basic Charge $10.01 per month 5.94',
+            'Basic Charge $10.01 per month 1.55'
+        ])
+
+        result = rr.read_electricity_bill(rows)
+        self.assertEqual(749, result.basic_charge_cents)
+
     def test_tier1(self):
         rows = self._add_total([
             'Tier 1 (First 460 kWh Used) (12/9/2020 - 12/31/2020) 0.094437 460 kWh 43.44'
@@ -74,11 +83,14 @@ class RowReaderTests(unittest.TestCase):
 
     def test_energy_exchange_credit(self):
         rows = self._add_total([
-            'Energy Exchange Credit -0.007386 1,629 kWh -12.03'
+            'Energy Exchange Credit (10/7/2021 - 10/31/2021) -0.007386 1,629 kWh -12.03'
         ])
         
         result = rr.read_electricity_bill(rows)
-        self._assertCharge(-0.007386, 1629, -12.03, result.energy_exchange_credit)
+
+        self.assertEqual(1, len(result.energy_exchange_credit))
+        self._assertDates(2021, 10, 7, 2021, 10, 31, result.energy_exchange_credit[0].dates)
+        self._assertCharge(-0.007386, 1629, -12.03, result.energy_exchange_credit[0].charge)
 
     def test_federal_wind_power_credit(self):
         rows = self._add_total([

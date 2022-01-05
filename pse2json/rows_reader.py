@@ -63,10 +63,10 @@ def _parse_tier(text: str) -> electricity_bill.TierCharge:
 def read_electricity_bill(rows: Iterable[str]) -> electricity_bill.ElectricityBill:
     dates: electricity_bill.DateRange = None
     used_kwh: int = None
-    basic_charge_cents: int = None
+    basic_charge_cents: int = 0
     tier_1: list[electricity_bill.TierCharge] = []
     tier_2: list[electricity_bill.TierCharge] = []
-    energy_exchange_credit: electricity_bill.Charge = None
+    energy_exchange_credit: list[electricity_bill.DatedCharge] = []
     electric_cons_program_charge: list[electricity_bill.DatedCharge] = []
     federal_wind_power_credit: list[electricity_bill.DatedCharge] = []
     renewable_energy_credit: list[electricity_bill.DatedCharge] = []
@@ -83,7 +83,7 @@ def read_electricity_bill(rows: Iterable[str]) -> electricity_bill.ElectricityBi
             used_kwh = _float_from_match(_RE_FLOAT.match(row))
             dates = _date_range_from_match(_RE_DATE_RANGE.search(row))
         elif 'Basic Charge' in row:
-            basic_charge_cents = int(round(float(row.split(' ')[-1]) * 100))
+            basic_charge_cents += int(round(float(row.split(' ')[-1]) * 100))
         elif row.startswith('Tier '):
             tier, tier_index = _parse_tier(row)
             if tier_index == 1:
@@ -91,7 +91,7 @@ def read_electricity_bill(rows: Iterable[str]) -> electricity_bill.ElectricityBi
             else:
                 tier_2.append(tier)
         elif row.startswith('Energy Exchange Credit'):
-            energy_exchange_credit = _parse_charge(row)
+            energy_exchange_credit.append(_parse_dated_charge(row))
         elif row.startswith('Electric Cons. Program Charge'):
             electric_cons_program_charge.append(_parse_dated_charge(row))
         elif row.startswith('Federal Wind Power Credit'):
@@ -111,14 +111,11 @@ def read_electricity_bill(rows: Iterable[str]) -> electricity_bill.ElectricityBi
         else:
             raise ValueError(f'Unknown value found: {row}')
 
-    energy_exchange_credit_charge_cents = (
-        energy_exchange_credit.charge_cents if energy_exchange_credit else None)
-
     other_charge_cents = other.charge_cents if other else None
     values = [basic_charge_cents,
         sum(x.charge.charge_cents for x in tier_1),
         sum(x.charge.charge_cents for x in tier_2),
-        energy_exchange_credit_charge_cents,
+        sum(x.charge.charge_cents for x in energy_exchange_credit),
         sum(x.charge.charge_cents for x in electric_cons_program_charge),
         sum(x.charge.charge_cents for x in federal_wind_power_credit),
         sum(x.charge.charge_cents for x in renewable_energy_credit),
