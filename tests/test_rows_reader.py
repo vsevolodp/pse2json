@@ -50,8 +50,8 @@ class RowReaderTests(unittest.TestCase):
 
     def test_basic_charge_as_two_rows(self):
         rows = self._add_total([
-            'Basic Charge $10.01 per month 5.94',
-            'Basic Charge $10.01 per month 1.55'
+            'Basic Charge $7.49 per month 5.94',
+            'Basic Charge $7.49 per month 1.55'
         ])
 
         result = rr.read_electricity_bill(rows)
