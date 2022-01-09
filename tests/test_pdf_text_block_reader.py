@@ -1,7 +1,5 @@
 import unittest
 
-import fitz
-
 from unittest import mock
 
 from pse2json import pdf_text_block_reader as ptbr
@@ -39,7 +37,7 @@ class PdfTextBlockReaderTests(unittest.TestCase):
 
     @mock.patch('fitz.open')
     def test_inverted_x(self, fitz_open_mock):
-        doc_mock, page_mock = self.setup_mock(
+        self.setup_mock(
             fitz_open_mock,
             [(3, 2, 1, 4, 'text', 5, 6)]
         )
@@ -51,7 +49,7 @@ class PdfTextBlockReaderTests(unittest.TestCase):
 
     @mock.patch('fitz.open')
     def test_inverted_y(self, fitz_open_mock):
-        doc_mock, page_mock = self.setup_mock(
+        self.setup_mock(
             fitz_open_mock,
             [(1, 4, 3, 2, 'text', 5, 6)]
         )
