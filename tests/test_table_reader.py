@@ -38,7 +38,7 @@ class TableReaderTests(unittest.TestCase):
         blocks = [
             TextBlock(Rectangle(10, 10, 100, 20), 'Begin'),
             TextBlock(Rectangle(10, 20, 40, 30), 'Row 1\nbegins here'),
-            TextBlock(Rectangle(40, 60, 100, 30), 'and ends here'),
+            TextBlock(Rectangle(40, 20, 100, 30), 'and ends here'),
             TextBlock(Rectangle(10, 30, 100, 40), 'End')
         ]
         
