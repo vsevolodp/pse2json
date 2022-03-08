@@ -21,13 +21,7 @@ def read_table(file_name: str) -> eb.ElectricityBill:
     
     blocks = ptbr.read_text_blocks(file_name, PAGE_INDEX)
     rows = table_reader.read_table_rows(blocks, FROM_TEXT, TO_TEXT)
-
-    # for row in rows:
-    #     print('------')
-    #     print(row)
-
-    bill: eb.ElectricityBill = rows_reader.read_electricity_bill(rows)
-    return bill
+    return rows_reader.read_electricity_bill(rows)
 
 
 def main() -> int:
