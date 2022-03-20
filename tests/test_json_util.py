@@ -1,6 +1,5 @@
 import datetime
 import unittest
-import json
 
 from pse2json import electricity_bill as eb
 from pse2json import json_util
