@@ -1,4 +1,5 @@
 PyMuPDF==1.19.4
+dataclass-wizard==0.22.0
 
 # Testing
 pytest==6.2.5

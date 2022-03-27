@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import date
 
+from dataclass_wizard import JSONWizard
 
 @dataclass(frozen=True)
 class DateRange:
@@ -44,3 +45,10 @@ class ElectricityBill:
     subtotal_cents: int
     state_utility_tax: float
     total_cents: int
+
+@dataclass
+class ElectricityBillList(JSONWizard):
+    class _(JSONWizard.Meta):
+        key_transform_with_dump = 'SNAKE'
+
+    bills: list[ElectricityBill]

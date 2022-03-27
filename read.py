@@ -3,10 +3,11 @@
 # Install PyMuPDF
 # > pip3 install PyMuPDF
 
-import json, sys
+import sys
+
+from dataclass_wizard import asdict
 
 from pse2json import electricity_bill as eb
-from pse2json import json_util
 from pse2json import pdf_text_block_reader as ptbr
 from pse2json import rows_reader
 from pse2json import table_reader
@@ -33,10 +34,11 @@ def main() -> int:
         case 0:
             pass
         case 1:
-            bill_json = json.dumps(bills[0], indent=2, cls=json_util.JSONEncoder)
+            bill_json = bills[0].to_json(indent=2)
             print(bill_json)
         case _:
-            bills_json = json.dumps({ 'bills': bills }, indent=2, cls=json_util.JSONEncoder)
+            bills_list = eb.ElectricityBillList(bills=bills)
+            bills_json = bills_list.to_json(indent=2)
             print(bills_json)
 
 
