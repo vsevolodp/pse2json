@@ -17,14 +17,14 @@ class Charge:
 
 @dataclass(frozen=True)
 class TierCharge:
-    dates: DateRange
+    dates: DateRange | None
     up_to_kwh: int
     charge: Charge
 
 
 @dataclass(frozen=True)
 class DatedCharge:
-    dates: DateRange
+    dates: DateRange | None
     charge: Charge    
 
 
