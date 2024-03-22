@@ -1,6 +1,6 @@
-PyMuPDF==1.19.4
-dataclass-wizard==0.22.0
+PyMuPDF==1.*
+dataclass-wizard==*
 
 # Testing
-pytest==6.2.5
-pytest-cov==3.0.0
+pytest==8.*
+pytest-cov==4.*
