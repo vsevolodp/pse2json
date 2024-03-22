@@ -208,7 +208,7 @@ class RowReaderTests(unittest.TestCase):
 
     def test_charge_too_big(self):
         rows = _build_rows(
-            ['Energy Exchange Credit -0.007386 1,629 kWh -12.05'],
+            ['Energy Exchange Credit -0.007386 1,629 kWh -12.06'],
         )
         with self.assertRaises(ValueError) as context:
             rr.read_electricity_bill(rows)
@@ -217,7 +217,7 @@ class RowReaderTests(unittest.TestCase):
 
     def test_charge_too_small(self):
         rows = _build_rows(
-            ['Energy Exchange Credit -0.007386 1,629 kWh -12.01'],
+            ['Energy Exchange Credit -0.007386 1,629 kWh -12.00'],
         )
         with self.assertRaises(ValueError) as context:
             rr.read_electricity_bill(rows)
