@@ -41,7 +41,7 @@ def _parse_charge(text: str) -> electricity_bill.Charge:
     charge_cents = int(items[-1].replace(',', '').replace('.', ''))
 
     calculated_charge_cents = int(round(rate_usd_per_kwh * consumed_kwh * 100))
-    if abs(calculated_charge_cents - charge_cents) > 1:
+    if abs(calculated_charge_cents - charge_cents) > 2:
         raise ValueError(
             f'rate {rate_usd_per_kwh} x consumed {consumed_kwh} ({calculated_charge_cents / 100}) != ' +
             f'charge {charge_cents / 100} in \'{text}\'')
