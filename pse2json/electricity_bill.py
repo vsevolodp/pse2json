@@ -30,7 +30,7 @@ class DatedCharge:
 
 
 @dataclass(frozen=True)
-class ElectricityBill:
+class ElectricityBill(JSONWizard):
     dates: DateRange
     used_kwh: int
     basic_charge_cents: int

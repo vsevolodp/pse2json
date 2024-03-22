@@ -5,8 +5,6 @@
 
 import sys
 
-from dataclass_wizard import asdict
-
 from pse2json import electricity_bill as eb
 from pse2json import pdf_text_block_reader as ptbr
 from pse2json import rows_reader
@@ -40,6 +38,8 @@ def main() -> int:
             bills_list = eb.ElectricityBillList(bills=bills)
             bills_json = bills_list.to_json(indent=2)
             print(bills_json)
+
+    return 0
 
 
 if __name__ == '__main__':
