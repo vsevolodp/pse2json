@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@main
 
     - name: Set up Python 3.10
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@main
       with:
         python-version: "3.10"
 
@@ -44,7 +44,7 @@ jobs:
         pytest --cov=pse2json --cov-report=xml tests
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@main
       with:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
