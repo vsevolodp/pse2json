@@ -1,5 +1,5 @@
 PyMuPDF==1.*
-dataclass-wizard==*
+dataclass-wizard>=0.22.0
 
 # Testing
 pytest==8.*
