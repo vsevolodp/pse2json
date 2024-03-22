@@ -5,7 +5,7 @@ import fitz
 
 
 def read_text_blocks(file_name: str, page_index: int) -> list[TextBlock]:
-    blocks: list(TextBlock) = []
+    blocks: list[TextBlock] = []
 
     with fitz.open(file_name) as doc:
         page = doc.load_page(page_index)
